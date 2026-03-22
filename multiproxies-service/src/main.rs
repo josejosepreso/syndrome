@@ -10,7 +10,7 @@ async fn main() {
         .nest("/api", proxies::router());
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    println!("Server running: http://{}", addr);
+    println!("Server: http://{}", addr);
 
     axum::serve(tokio::net::TcpListener::bind(addr).await.unwrap(), app)
     .await

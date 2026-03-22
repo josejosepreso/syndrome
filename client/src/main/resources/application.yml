@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: client
+
+server:
+  port: 8080
+
+service:
+  proxies: http://localhost:3000/api/proxies
