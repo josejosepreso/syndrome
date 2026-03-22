@@ -5,7 +5,8 @@ use::std::fmt;
 #[derive(Builder, Debug, Serialize)]
 pub struct Proxy {
     pub ip: String,
-    pub port: u16
+    pub port: u16,
+    source: String,
 }
 
 impl fmt::Display for Proxy {

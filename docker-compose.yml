@@ -1,0 +1,31 @@
+services:
+  multiproxies:
+    build: ./multiproxies-service
+    container_name: multiproxies-service
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  client:
+    build: ./client-service
+    container_name: client-service
+    depends_on:
+      - multiproxies
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:latest
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
+
+volumes:
+  mysql_data:

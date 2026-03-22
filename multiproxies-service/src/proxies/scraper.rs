@@ -1,10 +1,10 @@
-use scraper::{ Html, Selector, ElementRef };
+use scraper::{Html, Selector, ElementRef};
 
-use crate::proxies::model::{ Proxy, ProxyBuilder };
+use crate::proxies::model::{Proxy, ProxyBuilder};
 use crate::proxies::config::SRC;
 use crate::util::get_body;
 
-pub fn parse_table(body: &str) -> Vec<Proxy> {
+pub fn parse_table(url: &str, body: &str) -> Vec<Proxy> {
     let html = Html::parse_document(body);
 
     let tbl_selector = Selector::parse("table").unwrap();
@@ -33,6 +33,7 @@ pub fn parse_table(body: &str) -> Vec<Proxy> {
         ProxyBuilder::default()
             .ip(ip)
             .port(port)
+            .source(url.to_string())
             .build()
             .ok()
     };
@@ -44,30 +45,33 @@ pub fn parse_table(body: &str) -> Vec<Proxy> {
         .collect()
 }
 
-pub fn to_proxies(body: &str) -> Vec<Proxy> {
-    body.lines().map(parse_proxy).collect::<Vec<_>>()
+pub fn to_proxies(url: &str, body: &str) -> Vec<Proxy> {
+    let parse_proxy = |s: &str| {
+        let (ip, port) = s
+            .split_once(":")
+            .unwrap_or_default();
+        let port = port
+            .chars()
+            .filter(|c| c.is_ascii_digit())
+            .collect::<String>()
+            .parse::<u16>()
+            .unwrap_or_default();
+
+        ProxyBuilder::default()
+            .ip(ip.to_string())
+            .port(port)
+            .source(url.to_string())
+            .build()
+            .unwrap()
+    };
+
+    body.lines()
+        .map(parse_proxy)
+        .collect::<Vec<_>>()
 }
 
-fn parse_proxy(s: &str) -> Proxy {
-    let (ip, port) = s
-        .split_once(":")
-        .unwrap_or_default();
-    let port = port
-        .chars()
-        .filter(|c| c.is_ascii_digit())
-        .collect::<String>()
-        .parse::<u16>()
-        .unwrap_or_default();
-
-    ProxyBuilder::default()
-        .ip(ip.to_string())
-        .port(port)
-        .build()
-        .unwrap()
-}
-
-fn request_proxies((url, f): (&str, fn(&str) -> Vec<Proxy>)) -> Vec<Proxy> {
-    f(&get_body(url))
+fn request_proxies((url, f): (&str, fn(&str, &str) -> Vec<Proxy>)) -> Vec<Proxy> {
+    f(url, &get_body(url))
 }
 
 pub fn get_proxies() -> Vec<Proxy> {
