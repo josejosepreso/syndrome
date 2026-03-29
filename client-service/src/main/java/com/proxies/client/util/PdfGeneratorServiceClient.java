@@ -1,47 +1,49 @@
 package com.proxies.client.util;
 
 import com.proxies.client.dto.BulkProxyDto;
-import com.proxies.client.dto.BulkProxyResponseDto;
+import com.proxies.client.dto.PdfGeneratorResponseDto;
 
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import static java.util.Objects.isNull;
 
 @Component
-public class BackendApplicationClient {
+public class PdfGeneratorServiceClient {
+
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@Value("${service.backend}")
-	private String backendServiceUrl;
+	@Value("${service.pdf-generator}")
+	private String pdfGeneratorServiceUrl;
 
-	public BulkProxyResponseDto performSaveAllProxies(BulkProxyDto dto) throws Exception {
+	public PdfGeneratorResponseDto generatePdf(BulkProxyDto dto) throws Exception {
 		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
 
 			HttpEntity<BulkProxyDto> httpEntity = new HttpEntity<>(dto, headers);
 
-			String url = this.backendServiceUrl + "/api/history/save/all/";
+			String url = this.pdfGeneratorServiceUrl + "/api/pdf-generator/generate-pdf-base64";
 
-			ResponseEntity<BulkProxyResponseDto> response = this.restTemplate.postForEntity(url, httpEntity,
-					BulkProxyResponseDto.class);
+			ResponseEntity<PdfGeneratorResponseDto> res = this.restTemplate.postForEntity(url, httpEntity,
+					PdfGeneratorResponseDto.class);
 
-			if (isNull(response.getBody()))
+			if (isNull(res.getBody()))
 				throw new Exception("Empty response body.");
 
-			return response.getBody();
+			return res.getBody();
 		} catch (Exception e) {
-			return BulkProxyResponseDto.builder()
-					.status("Error")
+			return PdfGeneratorResponseDto.builder()
+					.success(false)
 					.message(e.getMessage())
+					.document(null)
 					.build();
 		}
 	}

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+curl -X POST \
+	-H "Content-Type: application/json" \
+	--data-raw '{
+		"registeredBy": "ME",
+		"proxies": [
+			{
+				"ip": "192.168.0.10",
+				"port": "1000",
+				"source": "localhost"
+			}
+		]
+	}' \
+	http://localhost:8082/api/pdf-generator/generate-pdf-base64 | jq

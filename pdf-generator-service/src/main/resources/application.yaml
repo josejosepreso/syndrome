@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: pdf-generator-service
+
+server:
+  port: 8082

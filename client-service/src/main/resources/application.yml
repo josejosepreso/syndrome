@@ -8,3 +8,4 @@ server:
 service:
   proxies: ${MULTIPROXIES_SERVICE_URL}
   backend: ${BACKEND_APPLICATION_SERVICE_URL}
+  pdf-generator: ${PDF_GENERATOR_SERVICE_URL}
