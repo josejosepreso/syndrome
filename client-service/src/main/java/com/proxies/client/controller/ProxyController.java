@@ -1,8 +1,10 @@
 package com.proxies.client.controller;
 
+import com.proxies.client.dto.ProxiesScraperResponseDto;
 import com.proxies.client.service.ProxyService;
 import com.proxies.client.util.ApiResponse;
 
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,18 +15,31 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import tools.jackson.databind.ObjectMapper;
 
+import java.util.function.Supplier;
+
 @RestController
 @RequestMapping("/api/proxies")
 public class ProxyController {
 	@Autowired
 	private ProxyService service;
 
-	@GetMapping
-	public ResponseEntity<ApiResponse<?>> proxies() {
+    @GetMapping
+    @SneakyThrows
+    public ResponseEntity<ApiResponse<?>> getProxiesAsync() {
+        return this.proxies(this.service::executeProxiesScraperAsync);
+    }
+
+    @GetMapping("/sync")
+    @SneakyThrows
+    public ResponseEntity<ApiResponse<?>> getProxiesSync() {
+        return this.proxies(this.service::executeProxiesScraper);
+    }
+
+	private ResponseEntity<ApiResponse<?>> proxies(Supplier<ProxiesScraperResponseDto> method) {
 		ApiResponse<?> res;
 
 		try {
-			var item = this.service.executeProxiesScraper();
+			ProxiesScraperResponseDto item = method.get();
 
 			res = ApiResponse.builder()
 					.ok(true)

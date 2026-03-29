@@ -21,15 +21,15 @@ public class ProxyServiceClient {
     @Value("${service.proxies}")
     private String proxiesServiceUrl;
 
-	public List<ProxyDto> getAllProxies() throws Exception {
+	public List<ProxyDto> getAllProxies() throws RuntimeException {
 		String url = this.proxiesServiceUrl + "/api/proxies";
 		ResponseEntity<ProxyDto[]> res = this.restTemplate.getForEntity(url, ProxyDto[].class);
 
 		if (isNull(res.getBody()))
-			throw new Exception("Empty response body.");
+			throw new RuntimeException("Empty response body.");
 
 		if (!res.getStatusCode().is2xxSuccessful())
-			throw new Exception("An error occured when getting proxies: " + res.getBody());
+			throw new RuntimeException("An error occured when getting proxies: " + Arrays.toString(res.getBody()));
 
         return Arrays.stream(res.getBody()).toList();
     }

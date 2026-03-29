@@ -7,4 +7,6 @@ curl -X POST \
 		"port": "8081",
 		"source": "localhost"
 	}' \
-	http://localhost:8081/api/history/save | jq
+	http://localhost:8081/api/history/save \
+	| jq \
+	> saveProxy_response

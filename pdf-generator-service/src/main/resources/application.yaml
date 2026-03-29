@@ -4,3 +4,6 @@ spring:
 
 server:
   port: 8082
+
+service:
+  backend: ${BACKEND_APPLICATION_SERVICE_URL}

@@ -23,7 +23,7 @@ public class PdfGeneratorServiceClient {
 	@Value("${service.pdf-generator}")
 	private String pdfGeneratorServiceUrl;
 
-	public PdfGeneratorResponseDto generatePdf(BulkProxyDto dto) throws Exception {
+	public PdfGeneratorResponseDto generatePdf(BulkProxyDto dto) {
 		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
