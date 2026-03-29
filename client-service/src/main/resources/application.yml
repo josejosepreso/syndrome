@@ -6,4 +6,5 @@ server:
   port: 8080
 
 service:
-  proxies: http://multiproxies:3000/api/proxies
+  proxies: ${MULTIPROXIES_SERVICE_URL}
+  backend: ${BACKEND_APPLICATION_SERVICE_URL}

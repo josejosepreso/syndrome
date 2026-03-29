@@ -1,0 +1,10 @@
+#!/bin/sh
+
+curl -X POST \
+	-H "Content-Type: application/json" \
+	--data-raw '{
+		"ip": "127.0.0.1",
+		"port": "8081",
+		"source": "localhost"
+	}' \
+	http://localhost:8081/api/history/save | jq

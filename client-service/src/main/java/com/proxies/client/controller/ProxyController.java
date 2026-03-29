@@ -1,8 +1,5 @@
 package com.proxies.client.controller;
 
-import java.util.List;
-
-import com.proxies.client.dto.ProxyDto;
 import com.proxies.client.service.ProxyService;
 import com.proxies.client.util.ApiResponse;
 
@@ -12,33 +9,49 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpServerErrorException;
+
+import tools.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api/proxies")
 public class ProxyController {
-    @Autowired
-    private ProxyService service;
+	@Autowired
+	private ProxyService service;
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<?>> proxies() {
-        final ApiResponse<List<ProxyDto>> res = new ApiResponse<>();
+	@GetMapping
+	public ResponseEntity<ApiResponse<?>> proxies() {
+		ApiResponse<?> res;
 
-        try {
+		try {
+			var item = this.service.executeProxiesScraper();
 
-            res.setOk(true);
-            res.setMessage("Success");
-            res.setItem(this.service.getAllProxies());
+			res = ApiResponse.builder()
+					.ok(true)
+					.message(null)
+					.item(item)
+					.build();
 
-            return ResponseEntity.ok(res);
+			return ResponseEntity.ok(res);
 
-        } catch(Exception e) {
+		} catch (HttpServerErrorException errorException) {
 
-            res.setOk(false);
-            res.setMessage("Error: " + e.getMessage());
-            res.setItem(null);
+			res = ApiResponse.builder()
+					.item(new ObjectMapper().readTree(errorException.getResponseBodyAsString()))
+					.ok(false)
+					.message("Error")
+					.build();
 
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(res);
-        }
-    }
+		} catch (Exception e) {
+
+			res = ApiResponse.builder()
+					.item(null)
+					.ok(false)
+					.message(e.getMessage())
+					.build();
+		}
+
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(res);
+	}
 }

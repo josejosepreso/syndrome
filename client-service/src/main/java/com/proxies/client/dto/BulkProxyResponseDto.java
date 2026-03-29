@@ -1,16 +1,15 @@
 package com.proxies.client.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProxyDto {
-	private String ip;
-	private Integer port;
-	private String source;
+@Builder
+public class BulkProxyResponseDto {
+	@Getter @Setter private String status;
+	@Getter @Setter private String message;
 }

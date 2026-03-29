@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import static java.util.Objects.isNull;
+
 @Component
 public class ProxyServiceClient {
     @Autowired
@@ -19,8 +21,16 @@ public class ProxyServiceClient {
     @Value("${service.proxies}")
     private String proxiesServiceUrl;
 
-    public List<ProxyDto> getAllProxies() {
-        ResponseEntity<ProxyDto[]> res = this.restTemplate.getForEntity(this.proxiesServiceUrl, ProxyDto[].class);
+	public List<ProxyDto> getAllProxies() throws Exception {
+		String url = this.proxiesServiceUrl + "/api/proxies";
+		ResponseEntity<ProxyDto[]> res = this.restTemplate.getForEntity(url, ProxyDto[].class);
+
+		if (isNull(res.getBody()))
+			throw new Exception("Empty response body.");
+
+		if (!res.getStatusCode().is2xxSuccessful())
+			throw new Exception("An error occured when getting proxies: " + res.getBody());
+
         return Arrays.stream(res.getBody()).toList();
     }
 }

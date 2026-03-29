@@ -14,6 +14,9 @@ services:
     ports:
       - "8080:8080"
     restart: unless-stopped
+    environment:
+      MULTIPROXIES_SERVICE_URL: ${MULTIPROXIES_SERVICE_URL}
+      BACKEND_APPLICATION_SERVICE_URL: ${BACKEND_APPLICATION_SERVICE_URL}
 
   mysql:
     image: mysql:latest
@@ -26,6 +29,19 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init:/docker-entrypoint-initdb.d
+
+  backend:
+    build: ./backend-application
+    container_name: backend-application
+    depends_on:
+      - mysql
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+    environment:
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_URL: ${DATABASE_URL}
 
 volumes:
   mysql_data:
