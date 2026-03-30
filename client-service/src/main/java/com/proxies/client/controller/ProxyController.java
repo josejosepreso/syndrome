@@ -1,7 +1,7 @@
 package com.proxies.client.controller;
 
 import com.proxies.client.dto.ProxiesScraperResponseDto;
-import com.proxies.client.service.ProxyService;
+import com.proxies.client.service.IProxyService;
 import com.proxies.client.util.ApiResponse;
 
 import lombok.SneakyThrows;
@@ -20,20 +20,21 @@ import java.util.function.Supplier;
 @RestController
 @RequestMapping("/api/proxies")
 public class ProxyController {
+
 	@Autowired
-	private ProxyService service;
+	private IProxyService service;
 
-    @GetMapping
-    @SneakyThrows
-    public ResponseEntity<ApiResponse<?>> getProxiesAsync() {
-        return this.proxies(this.service::executeProxiesScraperAsync);
-    }
+	@GetMapping
+	@SneakyThrows
+	public ResponseEntity<ApiResponse<?>> getProxiesAsync() {
+		return this.proxies(this.service::executeProxiesScraperAsync);
+	}
 
-    @GetMapping("/sync")
-    @SneakyThrows
-    public ResponseEntity<ApiResponse<?>> getProxiesSync() {
-        return this.proxies(this.service::executeProxiesScraper);
-    }
+	@GetMapping("/sync")
+	@SneakyThrows
+	public ResponseEntity<ApiResponse<?>> getProxiesSync() {
+		return this.proxies(this.service::executeProxiesScraper);
+	}
 
 	private ResponseEntity<ApiResponse<?>> proxies(Supplier<ProxiesScraperResponseDto> method) {
 		ApiResponse<?> res;

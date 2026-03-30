@@ -4,14 +4,14 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class BulkProxyDto {
-	@Getter @Setter private List<ProxyDto> proxies;
-	@Getter @Setter private String registeredBy;
+	private List<ProxyDto> proxies;
+	private String registeredBy;
 }

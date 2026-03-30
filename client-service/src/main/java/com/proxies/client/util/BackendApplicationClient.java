@@ -31,7 +31,8 @@ public class BackendApplicationClient {
 
 			String url = this.backendServiceUrl + "/api/history/save/all/";
 
-			ResponseEntity<BulkProxyResponseDto> response = this.restTemplate.postForEntity(url, httpEntity, BulkProxyResponseDto.class);
+			ResponseEntity<BulkProxyResponseDto> response = this.restTemplate.postForEntity(url, httpEntity,
+					BulkProxyResponseDto.class);
 
 			if (isNull(response.getBody()))
 				throw new Exception("Empty response body.");

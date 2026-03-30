@@ -15,11 +15,11 @@ import static java.util.Objects.isNull;
 
 @Component
 public class ProxyServiceClient {
-    @Autowired
-    private RestTemplate restTemplate;
+	@Autowired
+	private RestTemplate restTemplate;
 
-    @Value("${service.proxies}")
-    private String proxiesServiceUrl;
+	@Value("${service.proxies}")
+	private String proxiesServiceUrl;
 
 	public List<ProxyDto> scrapProxies() throws RuntimeException {
 		String url = this.proxiesServiceUrl + "/api/proxies";
@@ -31,6 +31,6 @@ public class ProxyServiceClient {
 		if (!res.getStatusCode().is2xxSuccessful())
 			throw new RuntimeException("An error occured when getting proxies: " + Arrays.toString(res.getBody()));
 
-        return Arrays.stream(res.getBody()).toList();
-    }
+		return Arrays.stream(res.getBody()).toList();
+	}
 }

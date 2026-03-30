@@ -2,7 +2,7 @@ package com.backend.application.controller;
 
 import com.backend.application.dto.BulkProxyDto;
 import com.backend.application.dto.ProxyDto;
-import com.backend.application.service.ProxyHistoryService;
+import com.backend.application.service.IProxyHistoryService;
 import com.backend.application.util.ErrorResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/history")
 public class ProxyHistoryController {
+
 	@Autowired
-	private ProxyHistoryService proxyHistoryService;
+	private IProxyHistoryService proxyHistoryService;
 
 	@PostMapping("/save")
 	public ResponseEntity<?> saveProxy(@RequestBody ProxyDto proxyDto) {
