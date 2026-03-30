@@ -21,7 +21,7 @@ public class ProxyServiceClient {
     @Value("${service.proxies}")
     private String proxiesServiceUrl;
 
-	public List<ProxyDto> getAllProxies() throws RuntimeException {
+	public List<ProxyDto> scrapProxies() throws RuntimeException {
 		String url = this.proxiesServiceUrl + "/api/proxies";
 		ResponseEntity<ProxyDto[]> res = this.restTemplate.getForEntity(url, ProxyDto[].class);
 

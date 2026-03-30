@@ -17,10 +17,9 @@ import com.proxies.client.util.PdfGeneratorServiceClientAsync;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static java.util.concurrent.CompletableFuture.allOf;
-
 @Service
 public class ProxyService {
+
 	@Autowired
 	private ProxyServiceClient proxiesClient;
 
@@ -37,16 +36,11 @@ public class ProxyService {
 	private PdfGeneratorServiceClientAsync pdfGeneratorServiceClientAsync;
 
 	public List<ProxyDto> getAllProxies() throws RuntimeException {
-		return this.proxiesClient.getAllProxies();
+		return this.proxiesClient.scrapProxies();
 	}
 
 	public ProxiesScraperResponseDto executeProxiesScraper() {
-		List<ProxyDto> proxies = this.getAllProxies();
-
-		BulkProxyDto dto = BulkProxyDto.builder()
-				.proxies(proxies)
-				.registeredBy(null)
-				.build();
+		BulkProxyDto dto = this.getBulkProxyDto();
 
 		BulkProxyResponseDto backendResponse = this.backendClient.performSaveAllProxies(dto);
 
@@ -60,12 +54,7 @@ public class ProxyService {
 	}
 
 	public ProxiesScraperResponseDto executeProxiesScraperAsync() throws RuntimeException {
-		List<ProxyDto> proxies = this.getAllProxies();
-
-		BulkProxyDto dto = BulkProxyDto.builder()
-				.proxies(proxies)
-				.registeredBy(null)
-				.build();
+		BulkProxyDto dto = this.getBulkProxyDto();
 
         CompletableFuture<BulkProxyResponseDto> backendFuture = this.backendClientAsync.performSaveAllProxies(dto);
 
@@ -81,4 +70,11 @@ public class ProxyService {
 
         return future.join();
 	}
+
+    private BulkProxyDto getBulkProxyDto() {
+        return BulkProxyDto.builder()
+                .proxies(this.getAllProxies())
+                .registeredBy(null)
+                .build();
+    }
 }
