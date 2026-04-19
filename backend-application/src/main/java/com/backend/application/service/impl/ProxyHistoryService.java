@@ -47,7 +47,7 @@ public class ProxyHistoryService implements IProxyHistoryService {
 		return this.proxyRepository.save(proxy);
 	}
 
-	public BulkProxyResponseDto saveAll(BulkProxyDto bulkProxyDto) throws Exception {
+	public BulkProxyResponseDto saveAll(BulkProxyDto bulkProxyDto) {
 		String registeredBy = requireNonNullElse(bulkProxyDto.getRegisteredBy(), this.username);
 
 		Function<ProxyDto, Proxy> toEntity = this.proxyMapper.toEntityFunction(registeredBy);
